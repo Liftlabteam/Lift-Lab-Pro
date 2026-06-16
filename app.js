@@ -53,8 +53,25 @@ $("form").addEventListener("submit", async e => {
       return;
     }
 
-    $("result").textContent =
-      "REQUEST CREATED SUCCESSFULLY!";
+$("result").textContent = "REQUEST SAVED. GENERATING RENDER...";
+
+const generateRes = await fetch("/api/generate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
+
+const generateData = await generateRes.json();
+
+if (!generateRes.ok) {
+  alert(JSON.stringify(generateData));
+  return;
+}
+
+$("result").textContent =
+  "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
   } catch (err) {
     console.error(err);
     alert("Something went wrong.");
