@@ -15,6 +15,38 @@ $("form").addEventListener("submit", async e => {
   e.preventDefault();
 
   try {
+    const file = $("photo").files[0];
+
+    if (!file) {
+      alert("Please upload a truck photo first.");
+      return;
+    }
+
+    $("result").textContent = "UPLOADING PHOTO...";
+
+    const fileName = `${Date.now()}-${file.name}`;
+
+    const uploadRes = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/truck-photos/${fileName}`,
+      {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": file.type
+        },
+        body: file
+      }
+    );
+
+    if (!uploadRes.ok) {
+      const uploadError = await uploadRes.text();
+      alert("Image upload failed: " + uploadError);
+      return;
+    }
+
+    const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/truck-photos/${fileName}`;
+
     const payload = {
       name: $("name").value,
       contact: $("contact").value,
@@ -27,51 +59,50 @@ $("form").addEventListener("submit", async e => {
       primary_powder_color: $("powder_primary").value,
       secondary_powder_color: $("powder_secondary").value,
       notes: $("notes").value,
-      original_image_url: "pending",
-      rendered_image_url: "pending",
+      original_image_url: imageUrl,
+      rendered_image_url: "pending"
     };
 
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/build_requests`,
-      {
-        method: "POST",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": `Bearer ${SUPABASE_KEY}`,
-          "Content-Type": "application/json",
-          "Prefer": "return=representation"
-        },
-        body: JSON.stringify(payload)
-      }
-    );
+    $("result").textContent = "SAVING REQUEST...";
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/build_requests`, {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(payload)
+    });
 
     const data = await res.json();
 
     if (!res.ok) {
-      console.error(data);
       alert(JSON.stringify(data));
       return;
     }
 
-$("result").textContent = "REQUEST SAVED. GENERATING RENDER...";
+    $("result").textContent = "REQUEST SAVED. GENERATING RENDER...";
 
-const generateRes = await fetch("/api/generate", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(payload)
-});
+    const generateRes = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
 
-const generateData = await generateRes.json();
+    const generateData = await generateRes.json();
 
-if (!generateRes.ok) {
-  alert(JSON.stringify(generateData));
-  return;
-}
+    if (!generateRes.ok) {
+      alert(JSON.stringify(generateData));
+      return;
+    }
 
-$("result").textContent =
-  "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
+    $("result").textContent =
+      "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
+
   } catch (err) {
     console.error(err);
     alert("Something went wrong.");
