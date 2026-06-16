@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>LiftLab Pro MVP</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<nav>
+  <div class="brand"><span class="logo">L</span> LiftLab <b>Pro</b></div>
+  <a href="#app">Try Demo</a>
+</nav>
+
+<header class="hero">
+  <div>
+    <p class="tag">AI TRUCK BUILD PREVIEWS</p>
+    <h1>See your truck before you spend the money.</h1>
+    <p class="sub">Upload your truck, pick wheels, lift, tires, and powder colors. First render is free. After that: $10/render or $25/month unlimited.</p>
+    <a class="button" href="#app">Get First Render Free</a>
+  </div>
+  <div class="hero-card">
+    <div class="fake-logo">L</div>
+    <h2>LiftLab <span>Pro</span></h2>
+    <p>Wheels • Lifts • Powder Coat • Paint</p>
+  </div>
+</header>
+
+<main>
+<section class="section">
+  <h2>Pricing</h2>
+  <div class="pricing">
+    <div class="card">
+      <h3>Free</h3>
+      <h4>$0</h4>
+      <p>1 free render</p>
+      <p>Standard wheels/colors</p>
+      <p>Watermarked preview</p>
+    </div>
+    <div class="card hot">
+      <h3>Pay Per Render</h3>
+      <h4>$10</h4>
+      <p>HD render</p>
+      <p>No watermark</p>
+      <p>Best for one build</p>
+    </div>
+    <div class="card">
+      <h3>Pro</h3>
+      <h4>$25/mo</h4>
+      <p>Unlimited renders</p>
+      <p>More powder colors</p>
+      <p>More wheel options</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="app">
+  <h2>Create a Build Request</h2>
+  <div class="app">
+    <form id="form" class="card">
+      <label>Name</label>
+      <input id="name" placeholder="Your name" />
+      <label>Email or Phone</label>
+      <input id="contact" placeholder="Where to send the render" />
+      <label>Truck Photo</label>
+      <input id="photo" type="file" accept="image/*" />
+
+      <label>Wheel Brand</label>
+      <input id="wheel_brand" placeholder="American Force, KG1, TIS, Fuel..." />
+      <label>Wheel Size</label>
+      <input id="wheel_size" placeholder="26x14, 24x12, 22x12..." />
+      <label>Wheel Cut</label>
+      <input id="wheel_cut" placeholder="Spike, directional, 8 lug, etc." />
+      <label>Wheel Color / Finish</label>
+      <input id="wheel_finish" placeholder="Chrome, polished, black/milled..." />
+
+      <label>Lift Kit Size</label>
+      <input id="lift_size" placeholder="Stock, leveled, 6 inch, 8 inch..." />
+      <label>Lift Kit Brand</label>
+      <input id="lift_brand" placeholder="AnyLevel, McGaughys, Cognito..." />
+      <label>Powder Primary Color</label>
+      <input id="powder_primary" placeholder="Red, pink, chrome, black..." />
+      <label>Powder Secondary Color</label>
+      <input id="powder_secondary" placeholder="Optional second color" />
+      <label>Extra Notes</label>
+      <textarea id="notes" placeholder="Example: keep the same paint, add 37s, aggressive SEMA look."></textarea>
+
+      <button>Generate Request</button>
+    </form>
+
+    <div class="card preview">
+      <h3>Demo Preview</h3>
+      <img id="previewImg" />
+      <div id="result" class="result">Upload a truck and submit the form.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Admin Dashboard</h2>
+  <p class="muted">This demo saves requests on your phone/browser using local storage.</p>
+  <button onclick="exportData()">Export Requests</button>
+  <button class="secondary" onclick="clearData()">Clear Requests</button>
+  <div id="requests" class="requests"></div>
+  <pre id="exportBox"></pre>
+</section>
+</main>
+
+<footer>LiftLab Pro — See Your Truck Before You Spend The Money</footer>
+<script src="app.js"></script>
+</body>
+</html>
