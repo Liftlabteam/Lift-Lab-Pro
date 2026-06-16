@@ -48,7 +48,7 @@ $("form").addEventListener("submit", async e => {
 
     if (!res.ok) {
       console.error(data);
-      alert("Error saving request");
+      alert(JSON.stringify(data));
       return;
     }
 
