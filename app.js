@@ -27,7 +27,8 @@ $("form").addEventListener("submit", async e => {
       primary_powder_color: $("powder_primary").value,
       secondary_powder_color: $("powder_secondary").value,
       notes: $("notes").value,
-      image_url: "pending"
+      original_image_url: "pending",
+      rendered_image_url: "pending",
     };
 
     const res = await fetch(
