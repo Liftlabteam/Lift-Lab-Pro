@@ -92,6 +92,8 @@ Wheel Cut: ${wheel_cut}
 Wheel Finish: ${wheel_finish}
 Lift Brand: ${lift_brand}
 Lift Height: ${lift_height}
+Lift Type: ${lift_type}
+Preview Height: ${preview_height}
 Primary Powder Coat Color: ${primary_powder_color}
 Secondary Powder Coat Color: ${secondary_powder_color}
 Additional Notes: ${notes}
@@ -100,6 +102,24 @@ LIFT ACCURACY:
 The lift height must be visually accurate.
 Do not over-lift or under-lift the truck.
 Maintain realistic suspension geometry and tire fitment.
+ANYLEVEL ACCURACY:
+
+If lift brand is AnyLevel:
+
+Static 4-12:
+Use authentic AnyLevel static suspension geometry.
+
+Hydraulic 0-13:
+Use authentic AnyLevel hydraulic suspension geometry capable of lowering to 0 inches and raising to 13 inches.
+
+Hydraulic 4-17:
+Use authentic AnyLevel hydraulic suspension geometry capable of lowering to 4 inches and raising to 17 inches.
+
+Preview the truck at the requested preview height.
+
+Do not generate generic lift components.
+Do not generate random suspension bars.
+Suspension must resemble a real AnyLevel show-truck setup.
 
 FINAL GOAL:
 The customer should immediately recognize this as THEIR EXACT truck photo with only the requested modifications installed.
