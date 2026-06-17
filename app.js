@@ -56,6 +56,8 @@ $("form").addEventListener("submit", async e => {
       wheel_finish: $("wheel_finish").value,
       lift_brand: $("lift_brand").value,
       lift_height: $("lift_size").value,
+      lift_type: document.getElementById("lift_type").value,
+preview_height: document.getElementById("preview_height").value,
       primary_powder_color: $("powder_primary").value,
       secondary_powder_color: $("powder_secondary").value,
       notes: $("notes").value,
