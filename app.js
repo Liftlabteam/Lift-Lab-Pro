@@ -4,10 +4,10 @@ const SUPABASE_KEY = "sb_publishable_CosRhU39EbzOj2nKyFpOqw_VEc4Yg0V";
 const $ = id => document.getElementById(id);
 
 $("photo").addEventListener("change", e => {
-  const f = e.target.files[0];
-  if (!f) return;
+  const file = e.target.files[0];
+  if (!file) return;
 
-  $("previewImg").src = URL.createObjectURL(f);
+  $("previewImg").src = URL.createObjectURL(file);
   $("previewImg").style.display = "block";
 });
 
@@ -65,7 +65,7 @@ $("form").addEventListener("submit", async e => {
 
     $("result").textContent = "SAVING REQUEST...";
 
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/build_requests`, {
+    const saveRes = await fetch(`${SUPABASE_URL}/rest/v1/build_requests`, {
       method: "POST",
       headers: {
         "apikey": SUPABASE_KEY,
@@ -76,10 +76,10 @@ $("form").addEventListener("submit", async e => {
       body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
+    const saveData = await saveRes.json();
 
-    if (!res.ok) {
-      alert(JSON.stringify(data));
+    if (!saveRes.ok) {
+      alert(JSON.stringify(saveData));
       return;
     }
 
@@ -98,8 +98,6 @@ $("form").addEventListener("submit", async e => {
     let generateData;
     try {
       generateData = JSON.parse(generateText);
-      console.log("GENERATE DATA:", generateData);
-alert(JSON.stringify(generateData).slice(0, 1000));
     } catch {
       alert("API returned non-JSON error: " + generateText);
       return;
@@ -110,46 +108,31 @@ alert(JSON.stringify(generateData).slice(0, 1000));
       return;
     }
 
+    const b64 = generateData.b64_json || generateData.image?.b64_json;
 
-if (generateData.b64_json) {
-  $("result").innerHTML = "";
-
-  const title = document.createElement("h2");
-  title.textContent = "Render Generated ✅";
-
-  const img = document.createElement("img");
-  img.src = "data:image/png;base64," + generateData.b64_json;
-  img.alt = "Generated truck render";
-  img.style.width = "100%";
-  img.style.maxWidth = "600px";
-  img.style.borderRadius = "16px";
-  img.style.marginTop = "20px";
-
-$("result").appendChild(title);
-
-console.log(img.src);
-
-document.body.appendChild(img);
-
-$("result").appendChild(img);
-
-  return;
-}
-
-    if (generateData.image && generateData.image.b64_json) {
-      $("result").innerHTML = `
-        <h2>Render Generated ✅</h2>
-        <img
-          src="data:image/png;base64,${generateData.image.b64_json}"
-          alt="Generated truck render"
-          style="width:100%; max-width:600px; border-radius:16px; margin-top:20px;"
-        />
-      `;
+    if (!b64) {
+      $("result").textContent =
+        "RENDER RETURNED, BUT NO IMAGE FOUND:\n\n" +
+        JSON.stringify(generateData, null, 2);
       return;
     }
 
-    $("result").textContent =
-      "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
+    $("result").innerHTML = "";
+
+    const title = document.createElement("h2");
+    title.textContent = "Render Generated ✅";
+
+    const img = document.createElement("img");
+    img.src = "data:image/png;base64," + b64;
+    img.alt = "Generated truck render";
+    img.style.width = "100%";
+    img.style.maxWidth = "600px";
+    img.style.borderRadius = "16px";
+    img.style.marginTop = "20px";
+    img.style.display = "block";
+
+    $("result").appendChild(title);
+    $("result").appendChild(img);
 
   } catch (err) {
     console.error(err);
