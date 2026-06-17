@@ -79,7 +79,6 @@ $("form").addEventListener("submit", async e => {
     const data = await res.json();
 
     if (!res.ok) {
-      console.error(data);
       alert(JSON.stringify(data));
       return;
     }
@@ -94,106 +93,17 @@ $("form").addEventListener("submit", async e => {
       body: JSON.stringify(payload)
     });
 
-const SUPABASE_URL = "https://xrrfridfgezcsktectlr.supabase.co";
-const SUPABASE_KEY = "sb_publishable_CosRhU39EbzOj2nKyFpOqw_VEc4Yg0V";
+    const generateText = await generateRes.text();
 
-const $ = id => document.getElementById(id);
-
-$("photo").addEventListener("change", e => {
-  const f = e.target.files[0];
-  if (!f) return;
-
-  $("previewImg").src = URL.createObjectURL(f);
-  $("previewImg").style.display = "block";
-});
-
-$("form").addEventListener("submit", async e => {
-  e.preventDefault();
-
-  try {
-    const file = $("photo").files[0];
-
-    if (!file) {
-      alert("Please upload a truck photo first.");
+    let generateData;
+    try {
+      generateData = JSON.parse(generateText);
+    } catch {
+      alert("API returned non-JSON error: " + generateText);
       return;
     }
-
-    $("result").textContent = "UPLOADING PHOTO...";
-
-    const fileName = `${Date.now()}-${file.name}`;
-
-    const uploadRes = await fetch(
-      `${SUPABASE_URL}/storage/v1/object/truck-photos/${fileName}`,
-      {
-        method: "POST",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": `Bearer ${SUPABASE_KEY}`,
-          "Content-Type": file.type
-        },
-        body: file
-      }
-    );
-
-    if (!uploadRes.ok) {
-      const uploadError = await uploadRes.text();
-      alert("Image upload failed: " + uploadError);
-      return;
-    }
-
-    const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/truck-photos/${fileName}`;
-
-    const payload = {
-      name: $("name").value,
-      contact: $("contact").value,
-      wheel_brand: $("wheel_brand").value,
-      wheel_size: $("wheel_size").value,
-      wheel_cut: $("wheel_cut").value,
-      wheel_finish: $("wheel_finish").value,
-      lift_brand: $("lift_brand").value,
-      lift_height: $("lift_size").value,
-      primary_powder_color: $("powder_primary").value,
-      secondary_powder_color: $("powder_secondary").value,
-      notes: $("notes").value,
-      original_image_url: imageUrl,
-      rendered_image_url: "pending"
-    };
-
-    $("result").textContent = "SAVING REQUEST...";
-
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/build_requests`, {
-      method: "POST",
-      headers: {
-        "apikey": SUPABASE_KEY,
-        "Authorization": `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json",
-        "Prefer": "return=representation"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error(data);
-      alert(JSON.stringify(data));
-      return;
-    }
-
-    $("result").textContent = "REQUEST SAVED. GENERATING RENDER...";
-
-    const generateRes = await fetch("/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const generateData = await generateRes.json();
 
     if (!generateRes.ok) {
-      console.error(generateData);
       alert(JSON.stringify(generateData));
       return;
     }
@@ -201,63 +111,32 @@ $("form").addEventListener("submit", async e => {
     if (generateData.b64_json) {
       $("result").innerHTML = `
         <h2>Render Generated ✅</h2>
-        <img 
-          src="data:image/png;base64,${generateData.b64_json}" 
+        <img
+          src="data:image/png;base64,${generateData.b64_json}"
           alt="Generated truck render"
           style="width:100%; max-width:600px; border-radius:16px; margin-top:20px;"
         />
       `;
-    } else if (generateData.image && generateData.image.b64_json) {
-      $("result").innerHTML = `
-        <h2>Render Generated ✅</h2>
-        <img 
-          src="data:image/png;base64,${generateData.image.b64_json}" 
-          alt="Generated truck render"
-          style="width:100%; max-width:600px; border-radius:16px; margin-top:20px;"
-        />
-      `;
-    } else {
-      $("result").textContent =
-        "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
-    }
-
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong.");
-  }
-});
-
-    if (!generateRes.ok) {
-      console.error(generateData);
-      alert(JSON.stringify(generateData));
       return;
     }
 
-    if (generateData.b64_json) {
+    if (generateData.image && generateData.image.b64_json) {
       $("result").innerHTML = `
         <h2>Render Generated ✅</h2>
-        <img 
-          src="data:image/png;base64,${generateData.b64_json}" 
+        <img
+          src="data:image/png;base64,${generateData.image.b64_json}"
           alt="Generated truck render"
           style="width:100%; max-width:600px; border-radius:16px; margin-top:20px;"
         />
       `;
-    } else if (generateData.image && generateData.image.b64_json) {
-      $("result").innerHTML = `
-        <h2>Render Generated ✅</h2>
-        <img 
-          src="data:image/png;base64,${generateData.image.b64_json}" 
-          alt="Generated truck render"
-          style="width:100%; max-width:600px; border-radius:16px; margin-top:20px;"
-        />
-      `;
-    } else {
-      $("result").textContent =
-        "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
+      return;
     }
+
+    $("result").textContent =
+      "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
 
   } catch (err) {
     console.error(err);
-    alert("Something went wrong.");
+    alert("Something went wrong: " + err.message);
   }
 });
