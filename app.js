@@ -126,8 +126,13 @@ if (generateData.b64_json) {
   img.style.borderRadius = "16px";
   img.style.marginTop = "20px";
 
-  $("result").appendChild(title);
-  $("result").appendChild(img);
+$("result").appendChild(title);
+
+console.log(img.src);
+
+document.body.appendChild(img);
+
+$("result").appendChild(img);
 
   return;
 }
