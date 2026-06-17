@@ -100,15 +100,19 @@ $("form").addEventListener("submit", async e => {
       return;
     }
 
-if (generateData.image && generateData.image.b64_json) {
+if (generateData.b64_json) {
   $("result").innerHTML = `
     <h2>Render Generated ✅</h2>
     <img 
-      src="data:image/png;base64,${generateData.image.b64_json}" 
+      src="data:image/png;base64,${generateData.b64_json}" 
+      alt="Generated truck render"
       style="width:100%; max-width:600px; border-radius:16px; margin-top:20px;"
     />
   `;
 } else {
+  $("result").textContent =
+    "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
+}
 # POST /api/generate
 
 Status: 200
