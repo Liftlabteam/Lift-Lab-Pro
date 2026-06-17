@@ -23,6 +23,11 @@ You are editing an existing truck photo, NOT generating a new truck.
 ABSOLUTE RULE #1:
 The truck in the uploaded image must remain the exact same truck.
 
+PIXEL PRESERVATION RULE:
+If a requested modification does not require changing a part, leave that part exaclty unchanged
+Preserve mirrors, headlights, taillights, paint reflections, windows, body lines, shadows, background, camera angle, and all non-modified components exactly as they appear in the original image
+If a requested modification requires changing unrelated parts, do not make that modification.
+
 Keep these EXACTLY the same:
 
 Year
