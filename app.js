@@ -110,7 +110,6 @@ alert(JSON.stringify(generateData).slice(0, 1000));
       return;
     }
 
-alert("API RESPONSE: " + JSON.stringify(generateData).slice(0, 1000));
 
 if (generateData.b64_json) {
   $("result").innerHTML = "";
