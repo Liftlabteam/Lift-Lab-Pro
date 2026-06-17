@@ -53,7 +53,7 @@ High-end SEMA show truck style.
     const openaiData = await openaiRes.json();
 
     if (!openaiRes.ok) {
-      return res.status(500).json({
+      return res.status(200).json({
         error: "OpenAI image generation failed",
         details: openaiData
       });
