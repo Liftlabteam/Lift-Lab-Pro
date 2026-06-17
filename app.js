@@ -108,17 +108,25 @@ $("form").addEventListener("submit", async e => {
       return;
     }
 
-    if (generateData.b64_json) {
-      $("result").innerHTML = `
-        <h2>Render Generated ✅</h2>
-        <img
-          src="data:image/png;base64,${generateData.b64_json}"
-          alt="Generated truck render"
-          style="width:100%; max-width:600px; border-radius:16px; margin-top:20px;"
-        />
-      `;
-      return;
-    }
+if (generateData.b64_json) {
+  $("result").innerHTML = "";
+
+  const title = document.createElement("h2");
+  title.textContent = "Render Generated ✅";
+
+  const img = document.createElement("img");
+  img.src = "data:image/png;base64," + generateData.b64_json;
+  img.alt = "Generated truck render";
+  img.style.width = "100%";
+  img.style.maxWidth = "600px";
+  img.style.borderRadius = "16px";
+  img.style.marginTop = "20px";
+
+  $("result").appendChild(title);
+  $("result").appendChild(img);
+
+  return;
+}
 
     if (generateData.image && generateData.image.b64_json) {
       $("result").innerHTML = `
