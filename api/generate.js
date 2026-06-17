@@ -1,12 +1,10 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
-
   try {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method Not Allowed" });
+    }
+
     const {
-      name,
-      contact,
       wheel_brand,
       wheel_size,
       wheel_cut,
@@ -15,14 +13,17 @@ export default async function handler(req, res) {
       lift_height,
       primary_powder_color,
       secondary_powder_color,
-      notes
-    } = req.body;
+      notes,
+      original_image_url
+    } = req.body || {};
 
     const prompt = `
 Create a photorealistic custom lifted truck render.
 
-Keep the truck body realistic and lifelike.
-Show the truck with these modifications:
+Use this uploaded truck photo as reference:
+${original_image_url}
+
+Modify the truck with:
 - Wheel brand: ${wheel_brand}
 - Wheel size: ${wheel_size}
 - Wheel cut/style: ${wheel_cut}
@@ -54,21 +55,32 @@ High-end SEMA show truck style.
 
     if (!openaiRes.ok) {
       return res.status(200).json({
+        success: false,
         error: "OpenAI image generation failed",
         details: openaiData
       });
     }
 
-return res.status(200).json({
-  success: true,
-  b64_json: openaiData.data?.[0]?.b64_json,
-  prompt
-});
+    const b64 = openaiData?.data?.[0]?.b64_json;
+
+    if (!b64) {
+      return res.status(200).json({
+        success: false,
+        error: "No b64_json image returned",
+        details: openaiData
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      b64_json: b64,
+      prompt
     });
 
   } catch (err) {
-    return res.status(500).json({
-      error: "Server error",
+    return res.status(200).json({
+      success: false,
+      error: "Server crashed",
       details: err.message
     });
   }
