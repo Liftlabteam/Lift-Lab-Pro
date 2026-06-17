@@ -59,10 +59,11 @@ High-end SEMA show truck style.
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      image: openaiData.data?.[0],
-      prompt
+return res.status(200).json({
+  success: true,
+  b64_json: openaiData.data?.[0]?.b64_json,
+  prompt
+});
     });
 
   } catch (err) {
