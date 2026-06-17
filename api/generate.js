@@ -18,13 +18,18 @@ export default async function handler(req, res) {
     } = req.body || {};
 
     const prompt = `
-Create a photorealistic custom lifted truck render.
+Edit the uploaded truck photo. Do NOT create a new truck.
 
-Use this uploaded truck photo as reference:
-${original_image_url}
+Strict rules:
+- Preserve the exact same truck year, make, model, cab, bed, grille, headlights, mirrors, paint color, body lines, camera angle, lighting, and background.
+- Do not change the truck color.
+- Do not change the body style.
+- Do not change the front end.
+- Do not change the scene.
+- Only modify the wheels, tires, lift height, stance, and visible suspension/powder coat parts.
 
-Modify the truck with:
-- Wheel brand: ${wheel_brand}
+Requested modifications:
+- Wheel brand/style: ${wheel_brand}
 - Wheel size: ${wheel_size}
 - Wheel cut/style: ${wheel_cut}
 - Wheel finish: ${wheel_finish}
@@ -32,13 +37,12 @@ Modify the truck with:
 - Lift height: ${lift_height}
 - Primary powder coat color: ${primary_powder_color}
 - Secondary powder coat color: ${secondary_powder_color}
-- Extra notes: ${notes}
+- Notes: ${notes}
 
-Make it look like a real truck photo, not a cartoon.
-High-end SEMA show truck style.
+Make it photorealistic and believable.
 `;
 
-    const openaiRes = await fetch("https://api.openai.com/v1/images/generations", {
+    const openaiRes = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -46,7 +50,12 @@ High-end SEMA show truck style.
       },
       body: JSON.stringify({
         model: "gpt-image-1",
-        prompt: prompt,
+        images: [
+          {
+            image_url: original_image_url
+          }
+        ],
+        prompt,
         size: "1024x1024"
       })
     });
@@ -56,7 +65,7 @@ High-end SEMA show truck style.
     if (!openaiRes.ok) {
       return res.status(200).json({
         success: false,
-        error: "OpenAI image generation failed",
+        error: "OpenAI image edit failed",
         details: openaiData
       });
     }
@@ -66,15 +75,14 @@ High-end SEMA show truck style.
     if (!b64) {
       return res.status(200).json({
         success: false,
-        error: "No b64_json image returned",
+        error: "No image returned",
         details: openaiData
       });
     }
 
     return res.status(200).json({
       success: true,
-      b64_json: b64,
-      prompt
+      b64_json: b64
     });
 
   } catch (err) {
