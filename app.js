@@ -100,8 +100,18 @@ $("form").addEventListener("submit", async e => {
       return;
     }
 
-    $("result").textContent =
-      "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
+if (generateData.image && generateData.image.b64_json) {
+  $("result").innerHTML = `
+    <h2>Render Generated ✅</h2>
+    <img 
+      src="data:image/png;base64,${generateData.image.b64_json}" 
+      style="width:100%; max-width:600px; border-radius:16px; margin-top:20px;"
+    />
+  `;
+} else {
+  $("result").textContent =
+    "RENDER GENERATED ✅\n\n" + JSON.stringify(generateData, null, 2);
+}
 
   } catch (err) {
     console.error(err);
