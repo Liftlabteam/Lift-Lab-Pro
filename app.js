@@ -76,7 +76,15 @@ $("form").addEventListener("submit", async e => {
       body: JSON.stringify(payload)
     });
 
-    const saveData = await saveRes.json();
+    const saveText = await saveRes.text();
+    let saveData = null;
+
+    try {
+      saveData = saveText ? JSON.parse(saveText) : null;
+    } catch {
+      alert("Supabase returned non-JSON error: " + saveText);
+      return;
+    }
 
     if (!saveRes.ok) {
       alert(JSON.stringify(saveData));
@@ -103,7 +111,7 @@ $("form").addEventListener("submit", async e => {
       return;
     }
 
-    if (!generateRes.ok) {
+    if (!generateRes.ok || generateData.success === false) {
       alert(JSON.stringify(generateData));
       return;
     }
@@ -121,15 +129,16 @@ $("form").addEventListener("submit", async e => {
 
     const title = document.createElement("h2");
     title.textContent = "Render Generated ✅";
+    title.style.marginBottom = "16px";
 
     const img = document.createElement("img");
     img.src = "data:image/png;base64," + b64;
     img.alt = "Generated truck render";
+    img.style.display = "block";
     img.style.width = "100%";
-    img.style.maxWidth = "600px";
+    img.style.maxWidth = "700px";
     img.style.borderRadius = "16px";
     img.style.marginTop = "20px";
-    img.style.display = "block";
 
     $("result").appendChild(title);
     $("result").appendChild(img);
