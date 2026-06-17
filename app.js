@@ -98,6 +98,8 @@ $("form").addEventListener("submit", async e => {
     let generateData;
     try {
       generateData = JSON.parse(generateText);
+      console.log("GENERATE DATA:", generateData);
+alert(JSON.stringify(generateData).slice(0, 1000));
     } catch {
       alert("API returned non-JSON error: " + generateText);
       return;
